@@ -1,0 +1,48 @@
+s14day21
+知识点：
+    URL：
+
+
+    views
+        - 请求的其他信息
+        - 装饰器
+
+    Models
+        - db 复杂操作
+
+
+    Templates
+        - 模板.html，  左侧菜单和上侧菜单的模板
+        - 自定义函数
+
+
+    cookie 和 session
+
+
+    分页（自定义的分页）
+
+
+    Form 验证
+
+
+
+
+上节内容回顾：
+
+    URL 路由系统
+        - /pattern/, views.xx
+        - /pattern/(\d+), views.xx
+        - /pattern/(?P<nid>\d+), views.xx
+        - /pattern/(?P<nid>\d+) name='root', views.xx
+            生成url 根据name 生成url,1为后面匹配数字参数
+            reverse()
+            {% url ’root' 1 %}
+
+        - /crm/, include('appname.urls')
+
+        - 默认值 传递入函数
+        /index/ {'web': root}
+
+        def func(request，web):
+            return HttpResponse(web)
+
