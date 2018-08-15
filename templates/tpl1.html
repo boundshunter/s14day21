@@ -1,0 +1,19 @@
+{% extends 'template.html' %}
+
+{% block title %}用户管理{% endblock %}
+{% block css %}
+    <style>
+        .body{
+            background-color: red;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1 class="pg-header">用户管理</h1>
+    <ul class="body">
+        {% for url in url_list %}
+            <li>{{ url }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

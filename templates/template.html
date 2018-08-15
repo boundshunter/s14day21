@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="/static/commons.css">
+    <style>
+        .pg-header{
+            height: 80px;
+            background-color: gray;
+            color: brown;
+        }
+    </style>
+    {% block css %} {% endblock %}
+</head>
+<body>
+    {% block content %} {% endblock %}
+    <script src="/static/jquery-3.3.1.min.js"></script>
+    {% block js %} {% endblock %}
+</body>
+</html>

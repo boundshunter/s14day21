@@ -6,16 +6,59 @@ s14day21
     views
         - 请求的其他信息
         - 装饰器
-
+        from django.core.handlers.wsgi import WSGIRequest
+        request.environ[key]
     Models
         - db 复杂操作
 
 
     Templates
         - 模板.html，  左侧菜单和上侧菜单的模板
+            extends 继承模板，一个Html只能继承一个模板
+            include 模板导入可以多次
+
+        - 自定义 simple_tag
+            app下创建 templatetags 目录
+             目录中创建任意 .py文件
+             py文件中函数
+                固定写法，不可更改任何名字
+                from django import template
+                from django.utils.safestring import mark_safe
+                register = template.Library()
+                @register.simple_tag
+
+                函数部分，自定义
+                def func(arg1,..argn):
+                    return "xxxadfadgadadafdaf"
+
+                settings中注册app
+                顶部 {% load func %}
+                使用:
+                   {% 函数名 arg1 arg2 %}
+
+
         - 自定义函数
-
-
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <title>{% block title %} {% endblock %}</title>
+                            <link rel="stylesheet" href="/static/commons.css">
+                            <style>
+                                .pg-header{
+                                    height: 80px;
+                                    background-color: gray;
+                                    color: brown;
+                                }
+                            </style>
+                            {% block css %} {% endblock %}
+                        </head>
+                        <body>
+                            {% block content %} {% endblock %}
+                            <script src="/static/jquery-3.3.1.min.js"></script>
+                            {% block js %} {% endblock %}
+                        </body>
+                        </html>
     cookie 和 session
 
 
@@ -28,21 +71,131 @@ s14day21
 
 
 上节内容回顾：
+    请求周期：
+        url > 路由（urls) > 函数或类 > 返回字符串或模板语言
 
+        Form 表单提交
+            提交 -> url -> 函数或类中的方法
+                                。。。。
+                               return  HttpResponse
+                               return  render ..
+                               return  redirect('url')
+            用户      《   《    返回字符串
+            (当接收到 redirect 返回式，自动发起新的url请求
+        Ajax 提交数据:
+            $.ajax({
+                url: '/index/',
+                #data: {'k':'v"},
+                data: $(form对象).seriliaze() # 多选会发多个值
+                type: 'post',
+                dataType: 'JSON',
+                traditional: true, #配合 serilize多选发送列表方式使用
+                success: function(ret){
+                       location.reload();
+                       location.href("url")
+                }
+            })
     URL 路由系统
-        - /pattern/, views.xx
-        - /pattern/(\d+), views.xx
-        - /pattern/(?P<nid>\d+), views.xx
-        - /pattern/(?P<nid>\d+) name='root', views.xx
+        a. /pattern/, views.xx
+        b. /pattern/(\d+), views.xx
+        c. /pattern/(?P<nid>\d+), views.xx
+        d. /pattern/(?P<nid>\d+) name='root', views.xx
             生成url 根据name 生成url,1为后面匹配数字参数
             reverse()
             {% url ’root' 1 %}
 
-        - /crm/, include('appname.urls')
+        e. /crm/, include('appname.urls')
 
-        - 默认值 传递入函数
+        f. 默认值 传递入函数
         /index/ {'web': root}
 
-        def func(request，web):
-            return HttpResponse(web)
+            def func(request，web):
+                return HttpResponse(web)
+
+        g. 命名空间
+            当多个urls 指向同一个函数，函数如何区分是从哪个urls过来的？
+            这时候就需要使用namespace来区分了
+
+            urlpatterns = [
+                path('admin/', admin.site.urls),
+                path('app01/', views.index, {'name': 'alex'}),
+                path('a/', include('app01.urls', namespace='author')),
+            ]
+            解决：Specifying a namespace in include() without providing an app_name和XXX is not a registered namespace问题
+            app_name = 'app01'
+            urlpatterns = [
+                # path('admin/', admin.site.urls),
+                # path('app01/', views.index, {'name': 'alex'}),
+                path('login/', views.login)
+            ]
+            def login(request):
+                var = reverse('author:login')
+                print(var)
+                return HttpResponse('abc')
+
+            打印结果: [15/Aug/2018 10:49:38] "GET /a/login/ HTTP/1.1" 200 3
+                    /a/login/
+
+            html中：
+                {% url 'author:login' %}
+
+    3.
+        def func(request):
+            return.POST
+            return.GET
+            return.FILES
+            return.getlist
+            return.method
+            return.path_info
+            return render,HttpResponse,redirect
+
+    4.
+        render(request, 'xx.html')
+        # for
+        # if
+        # 索引. keys values items
+        # 多对多.all .filter
+
+
+    class UserType(models.Model):
+        name = models.CharField(max_length=32)
+
+    class User(models.Model):
+        username = models.CharField(max_length=32)
+        email = models.EmailField()
+        user_type = models.ForeignKey("UserType",to_field='id')
+        m = models.ManyToMany('UserGroup')
+
+    user_list = User.objects.all() 获取对象列表
+    for obj in user_list:
+        print(
+        obj.username, obj.email, obj.user_type_id
+        跨表
+        obj.user_type.name, obj.user_type.id
+        )
+
+    user = User.objects.get(id=1) 获取单行数据，单个对象
+
+    User.objects.all().values("username","user_type__name") 跨表 双 __
+                                   相当于  user_type.name
+
+    class UserGroup(models.Model):
+        name = 。。。
+
+
+    obj = User.object.get(id=1)
+
+    obj.m.add(2)   增加 1:2 关系
+    obj.m.add(2,3)
+    obj.m.add(*[1,2,3])
+    obj.m.remove(...)
+    obj.m.clear()
+
+    obj.m.set([1,2,3,4])
+    obj.m.all() 多个组信息，一个用户id=1，对应多个组 UserGroup对象
+
+    obj.m.all().filter(name='cto') ,找到所有组，过滤出cto组
+
+
+
 
