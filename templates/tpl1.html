@@ -1,5 +1,5 @@
 {% extends 'template.html' %}
-
+{% load simple %}
 {% block title %}用户管理{% endblock %}
 {% block css %}
     <style>
@@ -16,4 +16,7 @@
             <li>{{ url }}</li>
         {% endfor %}
     </ul>
+
+    {% simple_1 10 20 %}
+    {{ "abcd"|simple_2:"efg" }}
 {% endblock %}

@@ -17,24 +17,55 @@ s14day21
             extends 继承模板，一个Html只能继承一个模板
             include 模板导入可以多次
 
-        - 自定义 simple_tag
-            app下创建 templatetags 目录
-             目录中创建任意 .py文件
-             py文件中函数
-                固定写法，不可更改任何名字
-                from django import template
-                from django.utils.safestring import mark_safe
-                register = template.Library()
-                @register.simple_tag
+        - 自定义
+            simple_tag
+                app下创建 templatetags 目录
+                 目录中创建任意 .py文件
+                 py文件中函数
+                    固定写法，不可更改任何名字
+                    from django import template
+                    from django.utils.safestring import mark_safe
+                    register = template.Library()
+                    @register.simple_tag
 
-                函数部分，自定义
-                def func(arg1,..argn):
-                    return "xxxadfadgadadafdaf"
+                    函数部分，自定义
+                    def func(arg1,..argn):
+                        return "xxxadfadgadadafdaf"
 
-                settings中注册app
-                顶部 {% load func %}
-                使用:
-                   {% 函数名 arg1 arg2 %}
+                    settings中注册app
+                    顶部 {% load func %}
+                    使用:
+                       {% 函数名 arg1 arg2 %}
+
+                    优点：
+                        参数任意
+                    缺点：
+                        不能作为if条件
+            filter
+                app下创建 templatetags 目录
+                 目录中创建任意 .py文件
+                 py文件中函数
+                    固定写法，不可更改任何名字
+                    from django import template
+                    from django.utils.safestring import mark_safe
+                    register = template.Library()
+                    @register.simple_tag
+
+                    函数部分，自定义
+                    def func(arg1,..argn):
+                        return "xxxadfadgadadafdaf"
+
+                    settings中注册app
+                    顶部 {% load func %}
+                    使用:
+                        字符
+                       {{ 参数1|函数名:"参数二，参数三。。。"}}
+                       数字
+                       {{ 参数1|函数名:数字 }}
+                    有点：
+                        能作为if条件
+                    缺点：
+                        参数最多2个，不能加空格
 
 
         - 自定义函数
@@ -63,8 +94,13 @@ s14day21
 
 
     分页（自定义的分页）
+        XSS
+            - html中
+                {{ page_str|safe }}
 
-
+            - func中，将定义的字符串
+                from django.utils.safestring import mark_safe
+                page_str = mark_safe(page_str)
     Form 验证
 
 
@@ -198,4 +234,22 @@ s14day21
 
 
 
+
+
+分页逻辑：
+当前页: current_page
+总页数: total_count
+每页显示10条数据： per_page_count
+页码：
+
+如果 总页数 < 11:
+     start_index = 0
+     end_index = 总页数
+否则： # 总页数 > 11
+    如果当前页 <= 6:
+       start_index = 1
+       end_index = 11
+    否则：
+        start_index = 当前页-5
+        end_index = 当前页 +5 +1
 
