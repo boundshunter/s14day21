@@ -253,3 +253,8 @@ s14day21
         start_index = 当前页-5
         end_index = 当前页 +5 +1
 
+
+js 到第一页，最后一页，什么都不做 <a class="page" href="javascript:void(0)">上一页</a>
+    href="javascript:void(0)"
+  或者
+    href="#"
