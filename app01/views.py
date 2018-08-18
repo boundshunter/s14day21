@@ -70,12 +70,19 @@ def login_1(request):
             return render(request, 'login.html')
 
 
+def auth(func):
+    def inner(request, *args, **kwargs):
+        v = request.COOKIES.get('username111')
+        if not v:
+            return redirect('/text/login/')
+        return func(request, *args, **kwargs)
+    return inner
+
+
+@auth
 def index_1(request):
     v = request.COOKIES.get('username111')
-    if not v:
-        return redirect('/login/')
-    else:
-        return render(request, 'index.html', {'curr_user': v})
+    return render(request, 'index.html', {'curr_user': v})
 
 
 def cookie(request):
@@ -83,7 +90,9 @@ def cookie(request):
     rep = HttpResponse("aaa")
     rep = render(request, 'index.html')
     rep.set_cookie(key, value)
-    rep.set_signed_cookie(key, value, salt='加密盐')
+    rep.set_signed_cookie(key, value, salt='加密的字符')  # 带签名的cookie,加密，加密字符或名字随意指定有意义即可
+    # 解密cookie
+    request.get_signed_cookie('key',salt='加密字符串')
     # 设置cookie N秒后时效  秒为单位
     rep.set_cookie('username11', 'value', max_age=10)
     # 设置cookie 截止时间生效

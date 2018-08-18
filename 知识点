@@ -6,6 +6,35 @@ s14day21
     views
         - 请求的其他信息
         - 装饰器
+          FBV：
+          def auth(func):
+            def inner(request, *args, **kwargs):
+                v = request.COOKIES.get('username111')
+                if not v:
+                    return redirect('/text/login/')
+                return func(request, *args, **kwargs)
+            return inner
+
+
+          CBV
+            from django import views
+            from django.utils.decorators import method_decorator
+
+            @method.decorator(auth,name='dispatch') #类中函数装饰器全部生效 方法1
+            class Order(views.View):
+                #@method.decorator(auth) ##类中函数装饰器全部生效 方法2
+                #def dispatch(self, request, *args, **kwargs):
+                #    return super(Order,self).dispatch(request, *args, **kwargs)
+                #@method_decorator(auth) # 装饰器单独对get生效
+                def get(self, request):
+                    v = request.COOKIES.get('username111')
+                    return render(request, 'index.html',{'curr_user': v})
+
+                def post(self, request):
+                    v = request.COOKIES.get('username111')
+                    return render(request, 'index.html',{'curr_user': v})
+
+
         from django.core.handlers.wsgi import WSGIRequest
         request.environ[key]
     Models
@@ -258,3 +287,25 @@ js 到第一页，最后一页，什么都不做 <a class="page" href="javascrip
     href="javascript:void(0)"
   或者
     href="#"
+
+
+
+
+
+作业：
+    主机管理：
+        1、单标操作
+        2、一对多
+        3、多对多
+        要求：
+            a. 删除用对话框
+            b. 修改，添加使用新url方式
+            c. 基于cookie的用户认证，装饰器，自己写
+            d. 定制显示个数
+            e. 分页
+        额外预习：form组件，model操作
+            www.cnblogs.com/wupeiqi/articles/6216618.html
+            www.cnblogs.com/wupeiqi/articles/6144178.html
+
+
+
